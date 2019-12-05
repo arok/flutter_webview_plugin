@@ -11,7 +11,8 @@ class WebviewScaffold extends StatefulWidget {
   const WebviewScaffold({
     Key key,
     this.appBar,
-    @required this.url,
+    this.url,
+    this.urlBuilder,
     this.headers,
     this.javascriptChannels,
     this.withJavascript,
@@ -43,6 +44,7 @@ class WebviewScaffold extends StatefulWidget {
 
   final PreferredSizeWidget appBar;
   final String url;
+  final AsyncValueGetter<String> urlBuilder;
   final Map<String, String> headers;
   final Set<JavascriptChannel> javascriptChannels;
   final bool withJavascript;
@@ -146,11 +148,13 @@ class _WebviewScaffoldState extends State<WebviewScaffold> {
       persistentFooterButtons: widget.persistentFooterButtons,
       bottomNavigationBar: widget.bottomNavigationBar,
       body: _WebviewPlaceholder(
-        onRectChanged: (Rect value) {
+        onRectChanged: (Rect value) async {
           if (_rect == null) {
             _rect = value;
+            var url = widget.url;
+            url ??= await widget.urlBuilder();
             webviewReference.launch(
-              widget.url,
+              url,
               headers: widget.headers,
               javascriptChannels: widget.javascriptChannels,
               withJavascript: widget.withJavascript,

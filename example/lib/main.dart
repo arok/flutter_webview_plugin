@@ -18,7 +18,10 @@ final Set<JavascriptChannel> jsChannels = [
       }),
 ].toSet();
 
-void main() => runApp(MyApp());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   final flutterWebViewPlugin = FlutterWebviewPlugin();
@@ -269,6 +272,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               },
               child: const Text('Eval some javascript'),
+            ),
+            RaisedButton(
+              onPressed: () {
+                final future = flutterWebViewPlugin.evalJavascript('alert("Hello World");');
+                future.then((String result) {
+                  setState(() {
+                    _history.add('eval: $result');
+                  });
+                });
+              },
+              child: const Text('Eval javascript alert()'),
             ),
             RaisedButton(
               onPressed: () {

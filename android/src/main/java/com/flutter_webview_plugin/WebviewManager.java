@@ -19,9 +19,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
-import android.webkit.DownloadListener;
 import android.provider.MediaStore;
-import android.util.Log;
 
 import androidx.core.content.FileProvider;
 
@@ -441,25 +439,6 @@ class WebviewManager {
         if (!scrollBar) {
             webView.setVerticalScrollBarEnabled(false);
         }
-
-        webView.setDownloadListener(new DownloadListener() {
-            public void onDownloadStart(
-                    String url,
-                    String userAgent,
-                    String contentDisposition,
-                    String mimetype,
-                    long contentLength) {
-                Intent intent = new Intent(Intent.ACTION_QUICK_VIEW);
-                intent.setData(Uri.parse(url));
-                if (intent.resolveActivity(activity.getPackageManager()) != null) {
-                    activity.startActivity(intent);
-                } else {
-                    intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse(url));
-                    activity.startActivity(intent);
-                }
-            }
-        });
 
         if (headers != null) {
             webView.loadUrl(url, headers);
